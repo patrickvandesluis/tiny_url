@@ -56,7 +56,7 @@ ROOT_URLCONF = 'tiny_url.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'shrtnr', 'templates', 'shrtnr')],
+        'DIRS': [os.path.join(BASE_DIR, 'shrtnr', 'template', 'shrtnr')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,0 +1,13 @@
+{% extends "layouts/master.html" %}
+
+<!-- {% block title %}Home{% endblock %} -->
+
+{% block content %}
+    <h1>Home</h1>
+    <h4>Your link is: {{ url }} - leading to {{org_url}}</h4>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name='link' required placeholder="Your link here"/>
+        <button type="submit" class="btn btn-primary">Build</button>
+    </form>
+{% endblock %}
