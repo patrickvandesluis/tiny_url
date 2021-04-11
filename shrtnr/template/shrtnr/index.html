@@ -4,10 +4,14 @@
 
 {% block content %}
     <h1>Home</h1>
+    {% if url %}
     <h4>Your link is: {{ url }} - leading to {{org_url}}</h4>
+
+    <h5>Try again</h5>
+    {% endif %}
     <form method="POST">
         {% csrf_token %}
-        <input type="text" name='link' required placeholder="Your link here"/>
+        {{ form }}
         <button type="submit" class="btn btn-primary">Build</button>
     </form>
 {% endblock %}
