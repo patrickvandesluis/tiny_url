@@ -3,7 +3,7 @@
 <!-- {% block title %}Home{% endblock %} -->
 
 {% block content %}
-    <h1>Home</h1>
+    <h1>Shorten it!</h1>
     {% if url %}
     <h4>Your link is: {{ url }} - leading to {{org_url}}</h4>
 
@@ -11,7 +11,32 @@
     {% endif %}
     <form method="POST">
         {% csrf_token %}
-        {{ form }}
-        <button type="submit" class="btn btn-primary">Build</button>
+
+        {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.link }}
+                <label for="{{ form.link.id_for_label }}">URL</label>
+            </div>
+            <div class="input-field col s6">
+                {{ form.short }}
+                <label for="{{ form.short.id_for_label }}">Optional suffix</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Shorten</button>
     </form>
 {% endblock %}

@@ -14,6 +14,6 @@ class LinkForm(forms.Form):
         if not re.match('((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*', link):
             raise forms.ValidationError("Link is not a valid URL")
         return link
-    link = forms.CharField(max_length=5000, label="LINK")
-    short = forms.CharField(max_length=200, label="SHORT", required=False)
+    link = forms.CharField(max_length=5000, label="Link")
+    short = forms.CharField(max_length=200, label="Short", required=False)
 
