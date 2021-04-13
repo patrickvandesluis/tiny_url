@@ -42,7 +42,7 @@ sdist/
 var/ 
 wheels/ 
 *.egg-info/ 
-.installed.cfg 
+.in lled.cfg 
 *.egg 
 *.manifest 
 *.spec 

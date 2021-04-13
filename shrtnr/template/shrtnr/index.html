@@ -5,38 +5,62 @@
 {% block content %}
     <h1>Shorten it!</h1>
     {% if url %}
-    <h4>Your link is: {{ url }} - leading to {{org_url}}</h4>
+
+    <button class='col s1 btn' id='copy' onclick='copy()'>Copy short!</button>
+    <div class='row'>
+        <div class="col s6">
+          <input type='text' id='short' value={{ url }}>
+        </div>
+        <div class="col s1">
+            <h5>-></h5>
+        </div>
+        <div class="col s5">
+            <h5>{{ org_url }}</h5>
+        </div>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
     <h5>Try again</h5>
+    <br/>
     {% endif %}
     <form method="POST">
         {% csrf_token %}
-
-        {% if form.errors %}
-    {% for field in form %}
-        {% for error in field.errors %}
-            <div class="alert alert-danger">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-{% endif %}
-
         <div class="row">
             <div class="input-field col s6">
                 {{ form.link }}
                 <label for="{{ form.link.id_for_label }}">URL</label>
+                {% for error in form.link.errors %}
+                    <span class="helper-text red-text">{{ error}}</span>
+                {% endfor %}
             </div>
             <div class="input-field col s6">
                 {{ form.short }}
                 <label for="{{ form.short.id_for_label }}">Optional suffix</label>
+                {% for error in form.short.errors %}
+                    <span class="helper-text red-text">{{ error}}</span>
+                {% endfor %}
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Shorten</button>
     </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function copy() {
+        document.getElementById("copy").textContent = 'Copied!'
+        document.getElementById("short").select();
+        document.execCommand("copy");
+    }
+    {% if not url %}    
+        document.getElementById("id_link").focus();
+    {% else %}
+        document.getElementById("short").select();
+    {% endif %}
+</script>
 {% endblock %}

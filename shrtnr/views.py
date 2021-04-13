@@ -24,14 +24,13 @@ def index(request):
             if not link.startswith('http'):
                 link = 'http://' + link
             if context['form'].cleaned_data["short"]:
-                print('has short')
                 short = context['form'].cleaned_data["short"]
             else:
                 short = ''.join(random.choice(string.ascii_letters) for x in range(10))
             ip = get_client_ip(request)
             new_url = Link(link=link, short=short, ip=ip)
             new_url.save()
-            context['url'] = request.build_absolute_uri() + new_url.short,
+            context['url'] = request.build_absolute_uri() + new_url.short
             context['org_url'] = new_url.link
     else:
         context['form'] = LinkForm()
@@ -41,6 +40,7 @@ def index(request):
 
 def urlRedirect(request, short):
     data = Link.objects.get(short=short)
-    print(data.link)
+    data.times_used += 1
+    data.save()
     return redirect(data.link)
 
