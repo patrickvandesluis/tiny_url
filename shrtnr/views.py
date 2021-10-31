@@ -30,7 +30,7 @@ def index(request):
             ip = get_client_ip(request)
             new_url = Link(link=link, short=short, ip=ip)
             new_url.save()
-            context['url'] = request.build_absolute_uri() + new_url.short
+            context['url'] = 'https://vandesluis.com/' + new_url.short
             context['org_url'] = new_url.link
     else:
         context['form'] = LinkForm()
