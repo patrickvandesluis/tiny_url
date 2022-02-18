@@ -39,7 +39,10 @@ def index(request):
 
 
 def urlRedirect(request, short):
-    data = Link.objects.get(short=short)
+    try:
+        data = Link.objects.get(short=short)
+    except Link.DoesNotExist:
+        return redirect('/')
     data.times_used += 1
     data.save()
     return redirect(data.link)
