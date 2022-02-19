@@ -24,7 +24,7 @@ def index(request):
             if not link.startswith('http'):
                 link = 'http://' + link
             if context['form'].cleaned_data["short"]:
-                short = context['form'].cleaned_data["short"]
+                short = context['form'].cleaned_data["short"].lower()
             else:
                 short = ''.join(random.choice(string.ascii_letters) for x in range(10))
             ip = get_client_ip(request)
