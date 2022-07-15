@@ -1,6 +1,7 @@
 from django import forms
 from .models import Link
 import re
+from captcha.fields import CaptchaField
 
 
 class LinkForm(forms.Form):
@@ -16,4 +17,5 @@ class LinkForm(forms.Form):
         return link
     link = forms.CharField(max_length=5000, label="Link")
     short = forms.CharField(max_length=200, label="Short", required=False)
+    captcha = CaptchaField()
 

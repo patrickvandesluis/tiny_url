@@ -46,6 +46,14 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="row">
+            <div class="input-field col s3">
+                {{ form.captcha }}
+                {% for error in form.captcha.errors %}
+                        <span class="helper-text red-text">{{ error}}</span>
+                {% endfor %}
+            </div>
+        </div>
         <button type="submit" class="btn btn-primary">Shorten</button>
     </form>
 {% endblock %}
