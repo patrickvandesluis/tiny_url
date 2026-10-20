@@ -1,0 +1,28 @@
+[Unit]
+Description=tiny_url (gunicorn)
+After=network.target
+
+[Service]
+User=tiny_url
+Group=tiny_url
+WorkingDirectory=/srv/tiny_url
+ExecStart=/srv/tiny_url/venv/bin/gunicorn --bind 127.0.0.1:8001 --workers 2 --access-logfile - tiny_url.wsgi
+Restart=on-failure
+
+# Hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/tiny_url
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+LockPersonality=yes
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target
