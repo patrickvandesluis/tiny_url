@@ -1,18 +1,28 @@
+from django.conf import settings
+from django.db import IntegrityError
+from django.db.models import F
 from django.shortcuts import render, redirect
 from .forms import LinkForm
 from .models import Link
-import random, string
-import re
+import secrets
+import string
+
+
+SHORT_ALPHABET = string.ascii_lowercase + string.digits
+SHORT_LENGTH = 8
 
 
 def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+    # nginx sets X-Real-IP to $remote_addr. X-Forwarded-For can be forged
+    # by the client, so it is not used.
+    return request.META.get('HTTP_X_REAL_IP') or request.META.get('REMOTE_ADDR', '')
 
+
+def random_short():
+    while True:
+        short = ''.join(secrets.choice(SHORT_ALPHABET) for _ in range(SHORT_LENGTH))
+        if not Link.objects.filter(short__iexact=short).exists():
+            return short
 
 
 def index(request):
@@ -21,21 +31,19 @@ def index(request):
         context['form'] = LinkForm(request.POST)
         if context['form'].is_valid():
             link = context['form'].cleaned_data["link"]
-            if not link.startswith('http'):
-                link = 'http://' + link
-            if context['form'].cleaned_data["short"]:
-                short = context['form'].cleaned_data["short"].lower()
+            short = context['form'].cleaned_data["short"] or random_short()
+            try:
+                new_url = Link.objects.create(link=link, short=short, ip=get_client_ip(request))
+            except IntegrityError:
+                context['form'].add_error('short', "Short already exists, please pick something else.")
             else:
-                short = ''.join(random.choice(string.ascii_letters) for x in range(10))
-            ip = get_client_ip(request)
-            new_url = Link(link=link, short=short, ip=ip)
-            new_url.save()
-            context['url'] = 'https://vandesluis.com/' + new_url.short
-            context['org_url'] = new_url.link
+                context['url'] = settings.SHORT_URL_BASE + new_url.short
+                context['org_url'] = new_url.link
+                context['form'] = LinkForm()
     else:
         context['form'] = LinkForm()
 
-    return render(request, 'index.html', context)   
+    return render(request, 'index.html', context)
 
 
 def urlRedirect(request, short):
@@ -43,7 +51,5 @@ def urlRedirect(request, short):
         data = Link.objects.get(short=short)
     except Link.DoesNotExist:
         return redirect('/')
-    data.times_used += 1
-    data.save()
+    Link.objects.filter(pk=data.pk).update(times_used=F('times_used') + 1)
     return redirect(data.link)
-

@@ -1,5 +1,5 @@
-#/bin/bash
-
-cd /www/tiny_url
+#!/bin/bash
+# Local/manual start only; production uses deploy/tiny_url.service.
+cd "$(dirname "$0")"
 source venv/bin/activate
-gunicorn -b localhost:8001 tiny_url.wsgi
+exec gunicorn --bind 127.0.0.1:8001 tiny_url.wsgi
