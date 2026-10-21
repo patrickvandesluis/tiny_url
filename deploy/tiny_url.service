@@ -6,7 +6,7 @@ After=network.target
 User=tiny_url
 Group=tiny_url
 WorkingDirectory=/srv/tiny_url
-ExecStart=/srv/tiny_url/venv/bin/gunicorn --bind 127.0.0.1:8001 --workers 2 --access-logfile - tiny_url.wsgi
+ExecStart=/srv/tiny_url/venv/bin/gunicorn --bind 127.0.0.1:8001 --workers 2 --access-logfile - --no-control-socket tiny_url.wsgi
 Restart=on-failure
 
 # Hardening
